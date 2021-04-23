@@ -1,5 +1,8 @@
 package com.allegro.retriever.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties
 public class Repo {
     private String name;
     private int stars;
