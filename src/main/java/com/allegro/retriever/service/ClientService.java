@@ -1,8 +1,7 @@
 package com.allegro.retriever.service;
 
-import com.allegro.retriever.domain.Repo;
+import com.allegro.retriever.domain.Repos;
 
-import java.util.List;
 
 public interface ClientService {
 
@@ -10,7 +9,8 @@ public interface ClientService {
      * Service to parse json data to the
      * class object
      */
-    Object parse(String url);
 
-    List<Repo> parseList(String url);
+    Repos parseList(String url);
+
+    void postList(Repos repos, String url);
 }
