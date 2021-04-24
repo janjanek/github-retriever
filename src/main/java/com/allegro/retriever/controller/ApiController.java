@@ -1,6 +1,5 @@
 package com.allegro.retriever.controller;
 
-import com.allegro.retriever.domain.Repos;
 import com.allegro.retriever.service.RepoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,19 +14,19 @@ public class ApiController {
 
     @GetMapping("/users/{name}/repos")
     public @ResponseBody
-    Repos getRepos(@PathVariable(value = "name") String name) {                //may add later throws NoSuchFieldException
+    ReposDto getRepos(@PathVariable(value = "name") String name) {                //may add later throws NoSuchFieldException
 
 //        String url = "https://api.github.com/users/" + name + "/repos?per_page=100";
 
-        return repoService.getRepos(name);
+        return repoService.getRepos(name).toDto();
     }
 
     @GetMapping("/users/{name}/stars")
     public @ResponseBody
-    int getStarsCount(@PathVariable(value = "name") String name) {
+    StarsDto getStarsCount(@PathVariable(value = "name") String name) {
 
         //String url = "https://api.github.com/users/" + name + "/repos?per_page=100";
 
-        return repoService.countStars(name);
+        return new StarsDto(repoService.countStars(name));
     }
 }
