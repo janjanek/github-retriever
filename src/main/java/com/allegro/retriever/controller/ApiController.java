@@ -3,8 +3,7 @@ package com.allegro.retriever.controller;
 import com.allegro.retriever.domain.Repos;
 import com.allegro.retriever.service.JsonClientService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ApiController {
@@ -14,9 +13,11 @@ public class ApiController {
     @Autowired
     private JsonClientService clientService;
 
-    @GetMapping("/user/repos")
-    public Repos MainApi() {                                //may add later throws NoSuchFieldException
+    @GetMapping("/users/{name}/repos")
+    public @ResponseBody Repos MainApi(@PathVariable(value = "name") String name) {                //may add later throws NoSuchFieldException
 
-        return clientService.parseList(DATA_URL);
+        String url = "https://api.github.com/users/" + name + "/repos?per_page=100";
+
+        return clientService.parseList(url);
     }
 }
