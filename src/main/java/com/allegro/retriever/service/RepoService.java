@@ -10,12 +10,13 @@ public class RepoService {
     @Autowired
     private GithubClient githubClient;
 
-    public Repos getRepos(String url) {
-        return githubClient.getRepos(url);
+    public Repos getRepos(String name) {
+
+        return githubClient.getRepos(name);
     }
 
-    public int countStars(String url) {
-        Repos repos = githubClient.getRepos(url);
+    public int countStars(String name) {
+        Repos repos = githubClient.getRepos(name);
         return repos.countStars();
     }
 }

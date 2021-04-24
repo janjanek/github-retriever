@@ -10,6 +10,6 @@ public interface RepoClient {
      * class object
      */
 
-    Repos getRepos(String url);
+    Repos getRepos(String name);
 
 }

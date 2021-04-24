@@ -17,17 +17,17 @@ public class ApiController {
     public @ResponseBody
     Repos getRepos(@PathVariable(value = "name") String name) {                //may add later throws NoSuchFieldException
 
-        String url = "https://api.github.com/users/" + name + "/repos?per_page=100";
+//        String url = "https://api.github.com/users/" + name + "/repos?per_page=100";
 
-        return repoService.getRepos(url);
+        return repoService.getRepos(name);
     }
 
     @GetMapping("/users/{name}/stars")
     public @ResponseBody
     int getStarsCount(@PathVariable(value = "name") String name) {
 
-        String url = "https://api.github.com/users/" + name + "/repos?per_page=100";
+        //String url = "https://api.github.com/users/" + name + "/repos?per_page=100";
 
-        return repoService.countStars(url);
+        return repoService.countStars(name);
     }
 }

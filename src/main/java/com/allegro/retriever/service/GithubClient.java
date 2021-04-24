@@ -15,11 +15,14 @@ public class GithubClient implements RepoClient {
     private RestTemplate restTemplate;
 
     @Override
-    public Repos getRepos(String url) {
-        Repo[] response = restTemplate.getForObject(url, Repo[].class);
-        Repos repos = new Repos();
-        repos.setRepos(Arrays.asList(response));
+    public Repos getRepos(String name) {
+
+            String url = "https://api.github.com/users/" + name + "/repos?page=1&per_page=100";
+            Repo[] response = restTemplate.getForObject(url, Repo[].class);
+            Repos repos = new Repos();
+            repos.setRepos(Arrays.asList(response));
         return repos;
+
     }
 
 }
