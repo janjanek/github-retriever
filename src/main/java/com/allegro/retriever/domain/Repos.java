@@ -12,20 +12,15 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Repos {
 
-    private List<Repo> repos;
+    private final List<Repo> repos;
 
-    public Repos() {
-        repos = new ArrayList<>();
+    public Repos(List<Repo> repos) {
+        this.repos = repos;
     }
 
     @JsonGetter
     public List<Repo> getRepos() {
         return repos;
-    }
-
-    @JsonSetter
-    public void setRepos(List<Repo> repos) {
-        this.repos = repos;
     }
 
     public int countStars() {
