@@ -9,17 +9,17 @@ public class Repo {
     private String name;
     private int stars;
 
-    @JsonProperty(value = "full_name")
+    @JsonProperty(value = "name")
     public String getName() {
         return name;
     }
 
-    @JsonProperty(value = "full_name")
+    @JsonProperty(value = "name")
     public void setName(String name) {
         this.name = name;
     }
 
-    @JsonProperty(value = "stargazers_count")
+    @JsonProperty(value = "stargazersCount")
     public int getStars() {
         return stars;
     }

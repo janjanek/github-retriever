@@ -22,6 +22,14 @@ public class JsonClientService implements ClientService {
         return repos;
     }
 
+    @Override
+    public int countStars(String url) {
+        Repo[] response = restTemplate.getForObject(url, Repo[].class);
+        Repos repos = new Repos();
+        repos.setRepos(Arrays.asList(response));
+        return repos.countStars();
+    }
+
     public void postList(Repos repos, String url) {
         restTemplate.postForObject(url, repos, ResponseEntity.class);
     }

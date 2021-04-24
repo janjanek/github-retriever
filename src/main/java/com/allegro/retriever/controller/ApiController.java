@@ -14,10 +14,18 @@ public class ApiController {
     private JsonClientService clientService;
 
     @GetMapping("/users/{name}/repos")
-    public @ResponseBody Repos MainApi(@PathVariable(value = "name") String name) {                //may add later throws NoSuchFieldException
+    public @ResponseBody Repos getRepos(@PathVariable(value = "name") String name) {                //may add later throws NoSuchFieldException
 
         String url = "https://api.github.com/users/" + name + "/repos?per_page=100";
 
         return clientService.parseList(url);
+    }
+
+    @GetMapping("/users/{name}/stars")
+    public @ResponseBody int getStarsCount(@PathVariable(value = "name") String name) {
+
+        String url = "https://api.github.com/users/" + name + "/repos?per_page=100";
+
+        return clientService.countStars(url);
     }
 }

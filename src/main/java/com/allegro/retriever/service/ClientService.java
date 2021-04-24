@@ -12,5 +12,7 @@ public interface ClientService {
 
     Repos parseList(String url);
 
+    int countStars(String url);
+
     void postList(Repos repos, String url);
 }
