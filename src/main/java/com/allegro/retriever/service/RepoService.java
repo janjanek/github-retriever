@@ -7,8 +7,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class RepoService {
 
+    private final GithubClient githubClient;
+
     @Autowired
-    private GithubClient githubClient;
+    RepoService(GithubClient githubClient) {
+        this.githubClient = githubClient;
+    }
 
     public Repos getRepos(String name) {
 
