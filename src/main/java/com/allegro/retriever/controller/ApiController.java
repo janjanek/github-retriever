@@ -1,13 +1,13 @@
 package com.allegro.retriever.controller;
 
 import com.allegro.retriever.service.RepoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 public class ApiController {
-
-    private static final String DATA_URL = "https://api.github.com/users/allegro/repos?per_page=100";
 
     @Autowired
     private RepoService repoService;
@@ -16,17 +16,17 @@ public class ApiController {
     public @ResponseBody
     ReposDto getRepos(@PathVariable(value = "name") String name) {                //may add later throws NoSuchFieldException
 
-//        String url = "https://api.github.com/users/" + name + "/repos?per_page=100";
-
-        return repoService.getRepos(name).toDto();
+        ReposDto reposDto = repoService.getRepos(name).toDto();
+        log.info("Retrieving repos: {} for user: {}", reposDto, name);
+        return reposDto;
     }
 
     @GetMapping("/users/{name}/stars")
     public @ResponseBody
     StarsDto getStarsCount(@PathVariable(value = "name") String name) {
 
-        //String url = "https://api.github.com/users/" + name + "/repos?per_page=100";
-
-        return new StarsDto(repoService.countStars(name));
+        StarsDto starsDto = new StarsDto(repoService.countStars(name));
+        log.info("Retrieving stars count: {} for user: {}", starsDto, name);
+        return starsDto;
     }
 }
