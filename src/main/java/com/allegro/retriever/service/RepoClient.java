@@ -12,5 +12,4 @@ public interface RepoClient {
 
     Repos getRepos(String url);
 
-    void postList(Repos repos, String url);
 }

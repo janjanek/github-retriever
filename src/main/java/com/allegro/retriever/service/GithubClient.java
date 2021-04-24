@@ -22,8 +22,4 @@ public class GithubClient implements RepoClient {
         return repos;
     }
 
-
-    public void postList(Repos repos, String url) {
-        restTemplate.postForObject(url, repos, ResponseEntity.class);
-    }
 }
