@@ -1,6 +1,7 @@
 package com.allegro.retriever.domain;
 
 import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -27,7 +28,7 @@ public class Repos {
         this.repos = repos;
     }
 
-    public int countStars(){
+    public int countStars() {
         return repos.stream().mapToInt(Repo::getStars).sum();
     }
 }

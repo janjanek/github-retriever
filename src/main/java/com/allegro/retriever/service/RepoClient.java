@@ -3,16 +3,14 @@ package com.allegro.retriever.service;
 import com.allegro.retriever.domain.Repos;
 
 
-public interface ClientService {
+public interface RepoClient {
 
     /**
      * Service to parse json data to the
      * class object
      */
 
-    Repos parseList(String url);
-
-    int countStars(String url);
+    Repos getRepos(String url);
 
     void postList(Repos repos, String url);
 }

@@ -8,27 +8,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
-
 @Service
-public class JsonClientService implements ClientService {
+public class GithubClient implements RepoClient {
+
     @Autowired
     private RestTemplate restTemplate;
 
     @Override
-    public Repos parseList(String url) {
+    public Repos getRepos(String url) {
         Repo[] response = restTemplate.getForObject(url, Repo[].class);
         Repos repos = new Repos();
         repos.setRepos(Arrays.asList(response));
         return repos;
     }
 
-    @Override
-    public int countStars(String url) {
-        Repo[] response = restTemplate.getForObject(url, Repo[].class);
-        Repos repos = new Repos();
-        repos.setRepos(Arrays.asList(response));
-        return repos.countStars();
-    }
 
     public void postList(Repos repos, String url) {
         restTemplate.postForObject(url, repos, ResponseEntity.class);
