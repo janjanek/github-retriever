@@ -20,7 +20,7 @@ public class ApiController {
 
     @GetMapping(path = "/users/{name}/repos", produces = "application/json")
     public @ResponseBody
-    ReposDto getRepos(@PathVariable(value = "name") String name) {                //may add later throws NoSuchFieldException
+    ReposDto getRepos(@PathVariable(value = "name") String name) {
 
         ReposDto reposDto = repoService.getRepos(name).toDto();
         log.info("Retrieving repos: {} for user: {}", reposDto, name);
