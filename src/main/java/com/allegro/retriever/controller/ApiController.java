@@ -18,7 +18,7 @@ public class ApiController {
 
     private final RepoService repoService;
 
-    @GetMapping("/users/{name}/repos")
+    @GetMapping(path = "/users/{name}/repos", produces = "application/json")
     public @ResponseBody
     ReposDto getRepos(@PathVariable(value = "name") String name) {                //may add later throws NoSuchFieldException
 
@@ -27,7 +27,7 @@ public class ApiController {
         return reposDto;
     }
 
-    @GetMapping("/users/{name}/stars")
+    @GetMapping(path = "/users/{name}/stars", produces = "application/json")
     public @ResponseBody
     StarsDto getStarsCount(@PathVariable(value = "name") String name) {
         StarsDto starsDto = new StarsDto(repoService.countStars(name));
