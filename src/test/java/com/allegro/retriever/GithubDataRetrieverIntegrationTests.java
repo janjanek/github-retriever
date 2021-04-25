@@ -51,7 +51,7 @@ class GithubDataRetrieverIntegrationTests {
     @Test
     public void should_return_stars_count_from_endpoint() throws Exception {
         //given
-        returns200onGet(reposBody());
+        returns200onGet("allegro", reposBody());
 
         //when
         ResultActions result = this.mockMvc.perform(get("/users/allegro/stars"));
@@ -65,30 +65,52 @@ class GithubDataRetrieverIntegrationTests {
     @Test
     public void should_return_repos_from_endpoint() throws Exception {
         //given
-        returns200onGet(reposBody());
+        returns200onGet("allegro", reposBody());
 
         //when
         ResultActions result = this.mockMvc.perform(get("/users/allegro/repos"));
 
         //then
         result.andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(jsonPath("$.repos", hasSize(2)))
-                .andExpect(jsonPath("$.repos[0].name").value("allegro"))
-                .andExpect(jsonPath("$.repos[1].name").value("ebay"))
+                .andExpect(jsonPath("$.repos[0].name").value("repo1"))
+                .andExpect(jsonPath("$.repos[1].name").value("repo2"))
                 .andExpect(jsonPath("$.repos[0].stars").value("2"))
                 .andExpect(jsonPath("$.repos[1].stars").value("6"));
     }
 
 
-    private String reposBody() {
-        return "[{ \"name\": \"allegro\", \"stargazers_count\": 2},{ \"name\": \"ebay\", \"stargazers_count\": 6}]";
+    @Test
+    public void should_return_404_when_no_user_exists() throws Exception {
+        //given
+        returns404onGet("allegro");
+
+        //when
+        ResultActions result = this.mockMvc.perform(get("/users/allegro/repos"));
+
+        //then
+        result.andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
-    private void returns200onGet(String body) {
-        wireMockServer.stubFor(com.github.tomakehurst.wiremock.client.WireMock.get(urlEqualTo("/users/allegro/repos?page=1&per_page=100"))
+    private String reposBody() {
+        return "[{ \"name\": \"repo1\", \"stargazers_count\": 2},{ \"name\": \"repo2\", \"stargazers_count\": 6}]";
+    }
+
+    private void returns200onGet(String user, String body) {
+        wireMockServer.stubFor(com.github.tomakehurst.wiremock.client.WireMock.get(urlEqualTo(path(user)))
                 .willReturn(aResponse().withBody(body)
                         .withHeader("Content-Type", "application/json")));
     }
 
+    private void returns404onGet(String user) {
+        wireMockServer.stubFor(com.github.tomakehurst.wiremock.client.WireMock.get(urlEqualTo(path(user)))
+                .willReturn(aResponse().withStatus(404)));
+    }
+
+    private String path(String user) {
+        return "/users/" + user + "/repos?page=1&per_page=100";
+    }
 
 }

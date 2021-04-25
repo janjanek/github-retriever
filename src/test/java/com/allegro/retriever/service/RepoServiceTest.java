@@ -77,8 +77,8 @@ class RepoServiceTest {
     }
 
     static private Repos someRepos() {
-        Repo someRepo = new Repo("allegro", 8);
-        Repo anotherRepo = new Repo("ebay", 4);
+        Repo someRepo = new Repo("repo1", 8);
+        Repo anotherRepo = new Repo("repo2", 4);
         return new Repos(Arrays.asList(someRepo, anotherRepo));
     }
 }
