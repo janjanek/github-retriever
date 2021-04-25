@@ -22,8 +22,12 @@ public class RestGithubClient implements GithubClient {
     @Value("${github_url}")
     private String githubUrl;
 
+    private final RestTemplate restTemplate;
+
     @Autowired
-    private RestTemplate restTemplate;
+    public RestGithubClient(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
 
     @Override
@@ -43,26 +47,3 @@ public class RestGithubClient implements GithubClient {
         }
     }
 }
-
-
-//    @Override
-//    public Repos getRepos(String name) {
-//
-//        //   https://api.github.com/users/allegro/repos?page=1&per_page=100
-//        int counter = 1;
-//        Repos reposResult = new Repos();
-//        do {
-//            String url = "https://api.github.com/users/" + name + "/repos?page=" + counter + "&per_page=100";
-//            Repo[] response = restTemplate.getForObject(url, Repo[].class);
-//            Repos repos = new Repos();
-//            repos.setRepos(Arrays.asList(response));
-//            if(repos.getRepos().isEmpty()){
-//                break;
-//            }
-//            reposResult.setRepos(Stream.concat(reposResult.getRepos().stream(), repos.getRepos().stream())
-//                    .collect(Collectors.toList()));
-//            counter++;
-//        }while(counter != 6);
-//        return reposResult;
-//
-//    }

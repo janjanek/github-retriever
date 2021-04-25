@@ -6,17 +6,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.util.NestedServletException;
+
+import java.net.SocketTimeoutException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -24,23 +28,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ActiveProfiles("test")
+@AutoConfigureMockMvc
 class GithubDataRetrieverIntegrationTests {
 
     @Value("${wiremock_port}")
     private int wiremockPort;
 
     @Autowired
-    private WebApplicationContext webApplicationContext;
-
     private MockMvc mockMvc;
 
     private WireMockServer wireMockServer;
 
     @BeforeEach
     public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
         this.wireMockServer = new WireMockServer(wiremockPort);
         this.wireMockServer.start();
+        this.wireMockServer.resetAll();
     }
 
     @AfterEach
@@ -65,10 +68,10 @@ class GithubDataRetrieverIntegrationTests {
     @Test
     public void should_return_repos_from_endpoint() throws Exception {
         //given
-        returns200onGet("allegro", reposBody());
+        returns200onGet("ebay", reposBody());
 
         //when
-        ResultActions result = this.mockMvc.perform(get("/users/allegro/repos"));
+        ResultActions result = this.mockMvc.perform(get("/users/ebay/repos"));
 
         //then
         result.andDo(print())
@@ -84,14 +87,28 @@ class GithubDataRetrieverIntegrationTests {
     @Test
     public void should_return_404_when_no_user_exists() throws Exception {
         //given
-        returns404onGet("allegro");
+        returns404onGet("google");
 
         //when
-        ResultActions result = this.mockMvc.perform(get("/users/allegro/repos"));
+        ResultActions result = this.mockMvc.perform(get("/users/google/repos"));
 
         //then
         result.andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+
+    @Test
+    public void should_return_500_on_timeout() {
+        //given
+        returns200onGetAfterSeconds("amazon", reposBody(), 5);
+
+        //expect
+        NestedServletException exception = assertThrows(NestedServletException.class, () -> {
+            this.mockMvc.perform(get("/users/amazon/repos"));
+        });
+        assertEquals(exception.getCause().getClass(), ResourceAccessException.class);
+        assertEquals(exception.getCause().getCause().getClass(), SocketTimeoutException.class);
     }
 
     private String reposBody() {
@@ -102,6 +119,14 @@ class GithubDataRetrieverIntegrationTests {
         wireMockServer.stubFor(com.github.tomakehurst.wiremock.client.WireMock.get(urlEqualTo(path(user)))
                 .willReturn(aResponse().withBody(body)
                         .withHeader("Content-Type", "application/json")));
+    }
+
+    private void returns200onGetAfterSeconds(String user, String body, int seconds) {
+        wireMockServer.stubFor(com.github.tomakehurst.wiremock.client.WireMock.get(urlEqualTo(path(user)))
+                .willReturn(aResponse().withBody(body)
+                        .withFixedDelay(seconds * 1000)
+                        .withHeader("Content-Type", "application/json"))
+        );
     }
 
     private void returns404onGet(String user) {

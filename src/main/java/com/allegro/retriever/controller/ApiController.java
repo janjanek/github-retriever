@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.*;
 public class ApiController {
 
     @Autowired
-    private RepoService repoService;
+    public ApiController(RepoService repoService) {
+        this.repoService = repoService;
+    }
+
+    private final RepoService repoService;
 
     @GetMapping("/users/{name}/repos")
     public @ResponseBody
